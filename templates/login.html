@@ -5,19 +5,13 @@
     <title>SmartSupply – Login</title>
     <style>
         @keyframes backgroundShift {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
             background: linear-gradient(-45deg, #ff0000, #ffcc00, #000000, #ff0000);
             background-size: 400% 400%;
             animation: backgroundShift 12s ease infinite;
@@ -26,7 +20,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #333;
             margin: 0;
         }
 
@@ -40,8 +33,13 @@
             width: 100%;
         }
 
+        .login-box img {
+            width: 100px;
+            margin-bottom: 15px;
+        }
+
         h2 {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             color: #000;
         }
 
@@ -51,6 +49,11 @@
             margin: 10px 0;
             border: 1px solid #aaa;
             border-radius: 5px;
+        }
+
+        .toggle {
+            margin: 0;
+            font-size: 13px;
         }
 
         button {
@@ -64,10 +67,6 @@
             margin-top: 15px;
         }
 
-        button:hover {
-            background-color: #444;
-        }
-
         .error {
             margin-top: 15px;
             color: red;
@@ -79,17 +78,19 @@
             bottom: 20px;
             width: 100%;
             text-align: center;
-            font-size: 13px;
-            color: #eee;
+            font-size: 6px;
+            color: #a40000;
         }
     </style>
 </head>
 <body>
     <div class="login-box">
+        <img id="pig-img" src="/static/img/pig_sleep.png" alt="Wursti">
         <h2>SmartSupply Login</h2>
         <form method="post">
             <input type="text" name="username" placeholder="Benutzername"><br>
-            <input type="password" name="password" placeholder="Passwort"><br>
+            <input type="password" name="password" id="password" placeholder="Passwort" oninput="wakeUpPig()"><br>
+            <label class="toggle"><input type="checkbox" onclick="togglePassword()"> Passwort anzeigen</label><br>
             <button type="submit">Login</button>
         </form>
         {% if error %}<p class="error">{{ error }}</p>{% endif %}
@@ -97,5 +98,27 @@
     <div class="footer">
         Alle Rechte beinhaltet – Natanael Man
     </div>
+
+    <script>
+        let pigImg = document.getElementById("pig-img");
+        let passField = document.getElementById("password");
+
+        function togglePassword() {
+            const checkbox = event.target;
+            if (checkbox.checked) {
+                passField.type = "text";
+                pigImg.src = "/static/img/pig_sleep.png"; // Augen zu
+            } else {
+                passField.type = "password";
+                pigImg.src = "/static/img/pig_awake.png"; // Augen offen
+            }
+        }
+
+        function wakeUpPig() {
+            if (passField.type === "password") {
+                pigImg.src = "/static/img/pig_awake.png"; // Augen offen beim Schreiben
+            }
+        }
+    </script>
 </body>
 </html>
