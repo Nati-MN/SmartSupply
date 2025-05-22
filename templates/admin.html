@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+    <title>SmartSupply Adminbereich</title>
+</head>
+<body>
+    <h2>SmartSupply – Adminbereich</h2>
+    <a href="/artikelverwaltung">Artikelverwaltung</a> | 
+        <a href="/filialverwaltung">Filialverwaltung</a> | 
+        <a href="/logout">Logout</a> | 
+        <a href="/admin_matrix">Matrix-Ansicht</a>
+    <h3>Alle Bestellungen</h3>
+    <table border ="1" cellpadding="6">
+        <tr>
+            <th>Zeitpunkt</th>
+            <th>Filiale</th>
+            <th>Artikel</th>
+            <th>Lieferant</th>
+            <th>Tag</th>
+            <th>Menge</th>
+            <th>Sonderwunsch</th>
+            <th>Datei</th>
+        </tr>
+        {% for b in bestellungen %}
+        <tr>
+            <td>{{ b.zeitpunkt }}</td>
+            <td>{{ b.filialname }} ({{ b.plz }})</td>
+            <td>{{ b.artikelname }}</td>
+            <td>{{ b.lieferant }}</td>
+            <td>{{ b.tag }}</td>
+            <td>{{ b.menge }}</td>
+            <td>{{ b.kommentar }}</td>
+            <td>
+                {% if b.datei %}
+                    <a href="{{ url_for('uploads', filename=b.datei) }}">Download</a>
+                {% else %}
+                    –
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

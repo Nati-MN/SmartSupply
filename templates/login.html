@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartSupply – Login</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, #ff0000, #ffcc00, #000);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            margin: 0;
+        }
+
+        .login-box {
+            background-color: #ffffffdd;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 350px;
+            width: 100%;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #000;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #444;
+        }
+
+        .error {
+            margin-top: 15px;
+            color: red;
+            font-weight: bold;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 13px;
+            color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>SmartSupply Login</h2>
+        <form method="post">
+            <input type="text" name="username" placeholder="Benutzername"><br>
+            <input type="password" name="password" placeholder="Passwort"><br>
+            <button type="submit">Login</button>
+        </form>
+        {% if error %}<p class="error">{{ error }}</p>{% endif %}
+    </div>
+    <div class="footer">
+        Alle Rechte beinhaltet – Natanael Man
+    </div>
+</body>
+</html>

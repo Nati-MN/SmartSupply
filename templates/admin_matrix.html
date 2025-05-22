@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+<head>
+    <title>SmartSupply – Admin Matrix</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 30px;
+            background-color: #fcfcfc;
+            color: #333;
+        }
+
+        h2 {
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0057b8;
+            margin-right: 12px;
+            font-weight: 600;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        td.article {
+            background-color: #ececec;
+            color: #222;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        tr:nth-child(even) td.article {
+            background-color: #f9f9f9;
+        }
+
+        td {
+            background-color: #fafafa;
+        }
+
+        td:hover {
+            background-color: #f1f1f1;
+        }
+
+        .footer {
+            margin-top: 1000px;
+            padding-top: 20px;
+            font-size: 13px;
+            text-align: center;
+            color: #4c0000;
+        }
+    </style>
+</head>
+<body>
+    <h2>SmartSupply – Adminübersicht (Matrix)</h2>
+    <a href="/admin">Klassische Ansicht</a> | 
+    <a href="/artikelverwaltung">Artikelverwaltung</a> | 
+    <a href="/filialverwaltung">Filialverwaltung</a> | 
+    <a href="/logout">Logout</a>
+    <br><br>
+    <strong>Export:</strong>
+    <a href="/admin_matrix_export/xlsx">📄 Excel</a> |
+    <a href="/admin_matrix_export/csv">📄 CSV</a> |
+    <a href="/admin_matrix_export/pdf">📄 PDF</a>
+    <br><br>
+    <table>
+         <tr>
+            <th>Datum</th>
+            <th>Artikel</th>
+            {% for filiale in filialen %}
+                <th>{{ filiale.plz }}</th>
+            {% endfor %}
+                </tr>
+
+
+                {% for artikel in artikel_liste %}
+                <tr>
+                    <td>{{ current_date }}</td>
+                    <td class="article">{{ artikel.name }}<br><small>{{ artikel.lieferant }} | {{ artikel.tag }}</small></td>
+                    {% for filiale in filialen %}
+                        <td>{{ artikel.bestellungen.get(filiale.plz, 0) }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+    </table>
+
+    <footer class="footer">
+        Alle Rechte beinhaltet – Natanael Man
+    </footer>
+</body>
+</html>

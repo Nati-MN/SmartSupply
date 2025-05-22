@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartSupply – Zentralbestellung</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 30px;
+            background-color: #fdfdfd;
+            color: #333;
+        }
+
+        h2 {
+            color: #222;
+            margin-bottom: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 15px;
+            font-size: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        input[type="number"], input[type="text"], input[type="file"] {
+            padding: 6px;
+            width: 95%;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-weight: bold;
+            background-color: #0057b8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #004799;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0057b8;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            font-size: 13px;
+            text-align: center;
+            color: #4c0000;
+        }
+    </style>
+</head>
+<body>
+    <h2>Bestellung für Filiale {{ filialname }} ({{ plz }})</h2>
+    <form method="post" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <th>Artikel</th>
+                <th>Lieferant</th>
+                <th>Bestelltag</th>
+                <th>Max. Menge</th>
+                <th>Deine Menge</th>
+            </tr>
+            {% for art in artikel %}
+            <tr {% if not art.erlaubt %}style="background:#eee;color:#999"{% endif %}>
+                <td>{{ art.name }}</td>
+                <td>{{ art.lieferant }}</td>
+                <td>{{ art.tag }}</td>
+                <td>{{ art.maxmenge }}</td>
+                <td>
+                  {% if art.erlaubt %}
+                    <input type="number" name="menge_{{ art.id }}" min="0" max="{{ art.maxmenge }}">
+                  {% else %}
+                    Nicht bestellbar
+                  {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <label>Sonderwunsch:</label><br>
+        <input type="text" name="kommentar" size="60"><br><br>
+        <label>Datei anhängen:</label><br>
+        <input type="file" name="datei"><br><br>
+        <button type="submit">📦 Bestellung abschicken</button>
+    </form>
+    <br>
+    <a href="/logout">Logout</a>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        {% for message in messages %}
+          <li style="color:green;">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <footer class="footer">
+        Alle Rechte beinhaltet – Natanael Man
+    </footer>
+</body>
+</html>
