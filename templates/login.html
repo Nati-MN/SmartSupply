@@ -4,9 +4,24 @@
     <meta charset="UTF-8">
     <title>SmartSupply – Login</title>
     <style>
+        @keyframes backgroundShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to bottom, #ff0000, #ffcc00, #000);
+            background: linear-gradient(-45deg, #ff0000, #ffcc00, #000000, #ff0000);
+            background-size: 400% 400%;
+            animation: backgroundShift 12s ease infinite;
+
             min-height: 100vh;
             display: flex;
             align-items: center;
