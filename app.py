@@ -252,14 +252,14 @@ def admin_matrix_export(format):
 
             class PDF(FPDF):
                 def header(self):
-                    self.set_font("Arial", "B", 14)
+                    self.set_font("Courier", "B", 14)
                     self.cell(0, 10, "SmartSupply - Bestellungen (Matrix)", ln=True, align="C")
                     self.ln(4)
 
             pdf = PDF(orientation='L', unit='mm', format='A4')
             pdf.set_auto_page_break(auto=True, margin=10)
             pdf.add_page()
-            pdf.set_font("Arial", size=9)
+            pdf.set_font("Helvetica", size=9)
 
             # Spaltenbreite dynamisch berechnen
             artikel_width = 100
@@ -286,7 +286,7 @@ def admin_matrix_export(format):
                     pdf.cell(filial_width, 8, menge, border=1, align="C")
                 pdf.ln()
 
-            response = make_response(pdf.output(dest='S').encode('latin1'))
+            response = make_response(pdf.output(dest='S').encode('latin-1', 'replace'))
             response.headers["Content-Disposition"] = "attachment; filename=bestellungen.pdf"
             response.headers["Content-type"] = "application/pdf"
             return response
