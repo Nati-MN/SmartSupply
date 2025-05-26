@@ -17,26 +17,39 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
+def get_filialname(plz):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT name FROM filialen WHERE plz = ?", (plz,))
+    result = cur.fetchone()
+    return result["name"] if result else "Unbekannt"
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     error = ''
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if username == 'admin' and password == 'adminpass':
-            session['admin'] = True
-            return redirect('/admin_matrix')
+
         conn = get_db()
         cur = conn.cursor()
-        cur.execute("SELECT * FROM filialen WHERE plz = ?", (username,))
-        filiale = cur.fetchone()
-        if filiale and password == filiale['plz'] + 'wurstico':
-            session['filiale'] = filiale['plz']
-            session['filialname'] = filiale['name']
-            return redirect('/bestellen')
+        cur.execute("SELECT * FROM benutzer WHERE username = ?", (username,))
+        user = cur.fetchone()
+
+        if user and user['passwort'] == password:
+            session['rolle'] = user['rolle']
+            session['username'] = user['username']
+            if user['rolle'] == 'admin':
+                session['admin'] = True
+                return redirect('/admin_matrix')
+            elif user['rolle'] == 'filiale':
+                session['filiale'] = user['plz']
+                session['filialname'] = get_filialname(user['plz'])  # Hilfsfunktion
+                return redirect('/bestellen')
         else:
             error = 'Login fehlgeschlagen'
     return render_template('login.html', error=error)
+
 
 @app.route('/bestellen', methods=['GET', 'POST'])
 def bestellen():
