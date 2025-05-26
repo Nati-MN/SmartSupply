@@ -93,7 +93,7 @@
                 <td>{{ art.maxmenge }}</td>
                 <td>
                   {% if art.erlaubt %}
-                    <input type="number" name="menge_{{ art.id }}" min="0" max="{{ art.maxmenge }}">
+                    <input type="number" name="menge_{{ a.id }}" min="0" max="{{ a.maxmenge or 999 }}" class="form-control">
                   {% else %}
                     Nicht bestellbar
                   {% endif %}

@@ -70,9 +70,15 @@ def bestellen():
         for a in artikel:
             menge = request.form.get(f'menge_{a["id"]}')
             erlaubt = (not a['plz'] or plz in a['plz'].split(','))
-            if menge and erlaubt and menge.isdigit() and int(menge) > 0:
+            if menge and erlaubt and menge.isdigit():
+                menge_int = int(menge)
+                max_menge = a['maxmenge'] or 999  # Fallback auf 999 falls NULL
+            if 0 < menge_int <= max_menge:
                 cur.execute("INSERT INTO bestellungen (plz, artikel_id, menge, kommentar, datei) VALUES (?, ?, ?, ?, ?)",
-                            (plz, a['id'], menge, kommentar, dateiname))
+                            (plz, a['id'], menge_int, kommentar, dateiname))
+            else:
+                flash(f"Ungültige Menge für Artikel: {a['name']} – erlaubt ist 1 bis {max_menge}")
+
         conn.commit()
         flash('Bestellung erfolgreich gespeichert!')
         return redirect('/bestellen')
