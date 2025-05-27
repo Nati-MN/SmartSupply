@@ -1,128 +1,63 @@
-<!doctype html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>SmartSupply – Zentralbestellung</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 30px;
-            background-color: #fdfdfd;
-            color: #333;
-        }
+{% extends "layout.html" %}
+{% block title %}Zentralbestellung{% endblock %}
 
-        h2 {
-            color: #222;
-            margin-bottom: 20px;
-        }
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-truck-loading"></i> Bestellung für Filiale {{ filialname }} ({{ plz }})</h2>
 
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 15px;
-            font-size: 15px;
-        }
-
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #333;
-            color: white;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        input[type="number"], input[type="text"], input[type="file"] {
-            padding: 6px;
-            width: 95%;
-            font-size: 14px;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-weight: bold;
-            background-color: #0057b8;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            margin-top: 15px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #004799;
-        }
-
-        a {
-            text-decoration: none;
-            color: #0057b8;
-            font-weight: bold;
-        }
-
-        .footer {
-            margin-top: 60px;
-            padding-top: 20px;
-            font-size: 13px;
-            text-align: center;
-            color: #4c0000;
-        }
-    </style>
-</head>
-<body>
-    <h2>Bestellung für Filiale {{ filialname }} ({{ plz }})</h2>
-    <form method="post" enctype="multipart/form-data">
-        <table>
-            <tr>
-                <th>Artikel</th>
-                <th>Lieferant</th>
-                <th>Bestelltag</th>
-                <th>Max. Menge</th>
-                <th>Deine Menge</th>
-            </tr>
-            {% for art in artikel %}
-            <tr {% if not art.erlaubt %}style="background:#eee;color:#999"{% endif %}>
-                <td>{{ art.name }}</td>
-                <td>{{ art.lieferant }}</td>
-                <td>{{ art.tag }}</td>
-                <td>{{ art.maxmenge }}</td>
-                <td>
-                  {% if art.erlaubt %}
-                    <input type="number" name="menge_{{ a.id }}" min="0" max="{{ a.maxmenge or 999 }}" class="form-control">
-                  {% else %}
-                    Nicht bestellbar
-                  {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
+<form method="post" enctype="multipart/form-data">
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>Artikel</th>
+                    <th>Lieferant</th>
+                    <th>Bestelltag</th>
+                    <th>Max. Menge</th>
+                    <th>Deine Menge</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in artikel %}
+                <tr class="{% if not a.erlaubt %}table-secondary text-muted{% endif %}">
+                    <td>{{ a.name }}</td>
+                    <td>{{ a.lieferant }}</td>
+                    <td>{{ a.tag }}</td>
+                    <td>{{ a.maxmenge }}</td>
+                    <td>
+                      {% if a.erlaubt %}
+                        <input type="number" name="menge_{{ a.id }}" min="0" max="{{ a.maxmenge or 999 }}" class="form-control text-center">
+                      {% else %}
+                        <em>nicht bestellbar</em>
+                      {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
-        <br>
-        <label>Sonderwunsch:</label><br>
-        <input type="text" name="kommentar" size="60"><br><br>
-        <label>Datei anhängen:</label><br>
-        <input type="file" name="datei"><br><br>
-        <button type="submit">📦 Bestellung abschicken</button>
-    </form>
-    <br>
-    <a href="/logout">Logout</a>
+    </div>
 
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul>
-        {% for message in messages %}
-          <li style="color:green;">{{ message }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
+    <div class="mb-3 mt-4">
+        <label for="kommentar" class="form-label"><i class="fas fa-comment-dots"></i> Sonderwunsch</label>
+        <input type="text" name="kommentar" id="kommentar" class="form-control" placeholder="z. B. Bitte 2x verpacken">
+    </div>
 
-    <footer class="footer">
-        Alle Rechte beinhaltet – Natanael Man
-    </footer>
-</body>
-</html>
+    <div class="mb-3">
+        <label for="datei" class="form-label"><i class="fas fa-file-upload"></i> Datei anhängen</label>
+        <input type="file" name="datei" id="datei" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        <i class="fas fa-paper-plane"></i> Bestellung abschicken
+    </button>
+</form>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="alert alert-success mt-4">
+      {% for message in messages %}
+        <div>{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+{% endblock %}

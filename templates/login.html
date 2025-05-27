@@ -1,8 +1,7 @@
-<!doctype html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>SmartSupply – Login</title>
+{% extends "layout.html" %}
+{% block title %}Login{% endblock %}
+{% block head %}
+    {{ super() }}
     <style>
         @keyframes backgroundShift {
             0% { background-position: 0% 50%; }
@@ -11,16 +10,14 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
             background: linear-gradient(-45deg, #ff0000, #ffcc00, #000000, #ff0000);
             background-size: 400% 400%;
             animation: backgroundShift 12s ease infinite;
 
-            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0;
+            min-height: 100vh;
         }
 
         .login-box {
@@ -82,43 +79,43 @@
             color: #a40000;
         }
     </style>
-</head>
-<body>
-    <div class="login-box">
-        <img id="pig-img" src="/static/img/pig_sleep.png" alt="Wursti">
-        <h2>SmartSupply Login</h2>
-        <form method="post">
-            <input type="text" name="username" placeholder="Benutzername"><br>
-            <input type="password" name="password" id="password" placeholder="Passwort" oninput="wakeUpPig()"><br>
-            <label class="toggle"><input type="checkbox" onclick="togglePassword()"> Passwort anzeigen</label><br>
-            <button type="submit">Login</button>
-        </form>
-        {% if error %}<p class="error">{{ error }}</p>{% endif %}
-    </div>
-    <div class="footer">
-        Alle Rechte beinhaltet – Natanael Man
-    </div>
+{% endblock %}
 
-    <script>
-        let pigImg = document.getElementById("pig-img");
-        let passField = document.getElementById("password");
+{% block content %}
+<div class="login-box">
+    <img id="pig-img" src="/static/img/pig_sleep.png" alt="Wursti">
+    <h2>SmartSupply Login</h2>
+    <form method="post">
+        <input type="text" name="username" placeholder="Benutzername"><br>
+        <input type="password" name="password" id="password" placeholder="Passwort" oninput="wakeUpPig()"><br>
+        <label class="toggle"><input type="checkbox" onclick="togglePassword()"> Passwort anzeigen</label><br>
+        <button type="submit">Login</button>
+    </form>
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+</div>
+<div class="footer">
+    Alle Rechte beinhaltet – Natanael Man
+</div>
 
-        function togglePassword() {
-            const checkbox = event.target;
-            if (checkbox.checked) {
-                passField.type = "text";
-                pigImg.src = "/static/img/pig_sleep.png"; // Augen zu
-            } else {
-                passField.type = "password";
-                pigImg.src = "/static/img/pig_awake.png"; // Augen offen
-            }
+<script>
+    let pigImg = document.getElementById("pig-img");
+    let passField = document.getElementById("password");
+
+    function togglePassword() {
+        const checkbox = event.target;
+        if (checkbox.checked) {
+            passField.type = "text";
+            pigImg.src = "/static/img/pig_sleep.png"; // Augen zu
+        } else {
+            passField.type = "password";
+            pigImg.src = "/static/img/pig_awake.png"; // Augen offen
         }
+    }
 
-        function wakeUpPig() {
-            if (passField.type === "password") {
-                pigImg.src = "/static/img/pig_awake.png"; // Augen offen beim Schreiben
-            }
+    function wakeUpPig() {
+        if (passField.type === "password") {
+            pigImg.src = "/static/img/pig_awake.png"; // Augen offen beim Schreiben
         }
-    </script>
-</body>
-</html>
+    }
+</script>
+{% endblock %}

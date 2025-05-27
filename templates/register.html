@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block title %}Benutzer anlegen{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 500px;">
+    <h2 class="mb-4"><i class="fas fa-user-plus"></i> Neuen Benutzer registrieren</h2>
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    {% if success %}
+        <div class="alert alert-success">{{ success }}</div>
+    {% endif %}
+
+    <form method="post">
+        <div class="mb-3">
+            <label for="username" class="form-label">Benutzername</label>
+            <input type="text" name="username" class="form-control" id="username" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Passwort</label>
+            <input type="password" name="password" class="form-control" id="password" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="rolle" class="form-label">Rolle</label>
+            <select name="rolle" id="rolle" class="form-select" onchange="togglePlz(this.value)">
+                <option value="filiale">Filiale</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+
+        <div class="mb-3" id="plz-field">
+            <label for="plz" class="form-label">PLZ (nur für Filialen)</label>
+            <input type="text" name="plz" class="form-control" id="plz">
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> Benutzer anlegen
+        </button>
+    </form>
+</div>
+
+<script>
+    function togglePlz(role) {
+        document.getElementById('plz-field').style.display = role === 'filiale' ? 'block' : 'none';
+    }
+    window.onload = () => togglePlz(document.getElementById('rolle').value);
+</script>
+{% endblock %}
