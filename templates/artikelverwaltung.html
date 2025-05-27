@@ -1,123 +1,69 @@
-<!doctype html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>SmartSupply – Artikelverwaltung</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 30px;
-            background-color: #fdfdfd;
-            color: #333;
-        }
+{% extends "layout.html" %}
 
-        h2 {
-            color: #222;
-            margin-bottom: 15px;
-        }
+{% block content %}
+<div class="container">
+    <h1>📦 SmartSupply – Artikelverwaltung</h1>
 
-        h3 {
-            margin-top: 40px;
-        }
-
-        a {
-            text-decoration: none;
-            color: #0057b8;
-            font-weight: bold;
-        }
-
-        input, button {
-            padding: 8px;
-            font-size: 14px;
-            margin: 5px 0;
-        }
-
-        form {
-            margin-bottom: 20px;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #333;
-            color: white;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        .footer {
-            margin-top: 60px;
-            padding-top: 20px;
-            font-size: 13px;
-            text-align: center;
-            color: #4c0000;
-        }
-    </style>
-</head>
-<body>
-    <h2>SmartSupply – Artikelverwaltung</h2>
-    <form method="post">
-        <b>Neuen Artikel anlegen:</b><br><br>
-        <label>Name:</label><br>
-        <input type="text" name="name" required><br>
-        <label>Lieferant:</label><br>
-        <input type="text" name="lieferant" required><br>
-        <label>Tag:</label><br>
-        <input type="text" name="tag" required><br>
-        <label>Max. Menge:</label><br>
-        <input type="number" name="maxmenge" required><br>
-        <label>Nur für PLZ (Komma getrennt, leer = alle):</label><br>
-        <input type="text" name="plz"><br>
-        <button type="submit" name="hinzu">➕ Hinzufügen</button>
+    <form method="post" class="form-section">
+        <h2>➕ Neuen Artikel anlegen</h2>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="lieferant">Lieferant:</label>
+            <input type="text" name="lieferant" id="lieferant" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="tag">Tag:</label>
+            <input type="text" name="tag" id="tag" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="maxmenge">Max. Menge:</label>
+            <input type="number" name="maxmenge" id="maxmenge" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="plz">Nur für PLZ (Komma getrennt, leer = alle):</label>
+            <input type="text" name="plz" id="plz" class="form-control">
+        </div>
+        <button type="submit" name="hinzu" class="btn btn-primary">➕ Hinzufügen</button>
     </form>
 
-    <h3>Bestehende Artikel</h3>
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>Lieferant</th>
-            <th>Tag</th>
-            <th>Max. Menge</th>
-            <th>Nur für PLZ</th>
-            <th>Löschen</th>
-        </tr>
-        {% for art in artikel %}
-        <tr>
-            <td>{{ art.name }}</td>
-            <td>{{ art.lieferant }}</td>
-            <td>{{ art.tag }}</td>
-            <td>{{ art.maxmenge }}</td>
-            <td>{{ art.plz }}</td>
-            <td>
-                <form method="post" style="display:inline;">
-                    <input type="hidden" name="art_id" value="{{ art.id }}">
-                    <button type="submit" name="loeschen" onclick="return confirm('Artikel wirklich löschen?');">🗑️ Löschen</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    <br>
-    <a href="/admin">← Zurück zum Adminbereich</a>
+    <h2>📋 Bestehende Artikel</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Lieferant</th>
+                    <th>Tag</th>
+                    <th>Max. Menge</th>
+                    <th>Nur für PLZ</th>
+                    <th>Aktion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for art in artikel %}
+                <tr>
+                    <td>{{ art.name }}</td>
+                    <td>{{ art.lieferant }}</td>
+                    <td>{{ art.tag }}</td>
+                    <td>{{ art.maxmenge }}</td>
+                    <td>{{ art.plz }}</td>
+                    <td>
+                        <form method="post" style="display:inline;">
+                            <input type="hidden" name="art_id" value="{{ art.id }}">
+                            <button type="submit" name="loeschen" class="btn btn-danger btn-sm" onclick="return confirm('Artikel wirklich löschen?');">🗑️ Löschen</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-    <footer class="footer">
-        Alle Rechte beinhaltet – Natanael Man
-    </footer>
-</body>
-</html>
+    <div class="mt-4">
+        <a href="/admin" class="btn btn-secondary">← Zurück zum Adminbereich</a>
+    </div>
+</div>
+{% endblock %}

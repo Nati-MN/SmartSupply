@@ -1,63 +1,46 @@
 {% extends "layout.html" %}
-{% block title %}Zentralbestellung{% endblock %}
 
 {% block content %}
-<h2 class="mb-4"><i class="fas fa-truck-loading"></i> Bestellung für Filiale {{ filialname }} ({{ plz }})</h2>
+<div class="container">
+    <h1 class="text-center">🛒 Bestellung für {{ filialname }} ({{ plz }})</h1>
 
-<form method="post" enctype="multipart/form-data">
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped align-middle text-center">
-            <thead class="table-dark">
+    <form method="POST" enctype="multipart/form-data" class="order-form">
+        <div class="form-group">
+            <label for="kommentar">Kommentar zur Bestellung (optional):</label>
+            <textarea name="kommentar" id="kommentar" class="form-control" rows="2"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="datei">Datei anhängen (optional):</label>
+            <input type="file" name="datei" id="datei" class="form-control-file">
+        </div>
+
+        <table class="table">
+            <thead>
                 <tr>
                     <th>Artikel</th>
                     <th>Lieferant</th>
-                    <th>Bestelltag</th>
-                    <th>Max. Menge</th>
-                    <th>Deine Menge</th>
+                    <th>Tag</th>
+                    <th>Menge</th>
                 </tr>
             </thead>
             <tbody>
-                {% for a in artikel %}
-                <tr class="{% if not a.erlaubt %}table-secondary text-muted{% endif %}">
-                    <td>{{ a.name }}</td>
-                    <td>{{ a.lieferant }}</td>
-                    <td>{{ a.tag }}</td>
-                    <td>{{ a.maxmenge }}</td>
-                    <td>
-                      {% if a.erlaubt %}
-                        <input type="number" name="menge_{{ a.id }}" min="0" max="{{ a.maxmenge or 999 }}" class="form-control text-center">
-                      {% else %}
-                        <em>nicht bestellbar</em>
-                      {% endif %}
-                    </td>
-                </tr>
+                {% for art in artikel %}
+                    {% if art.erlaubt %}
+                    <tr>
+                        <td>{{ art.name }}</td>
+                        <td>{{ art.lieferant }}</td>
+                        <td>{{ art.tag }}</td>
+                        <td>
+                            <input type="number" name="menge_{{ art.id }}" class="form-control" min="0" placeholder="0">
+                        </td>
+                    </tr>
+                    {% endif %}
                 {% endfor %}
             </tbody>
         </table>
-    </div>
 
-    <div class="mb-3 mt-4">
-        <label for="kommentar" class="form-label"><i class="fas fa-comment-dots"></i> Sonderwunsch</label>
-        <input type="text" name="kommentar" id="kommentar" class="form-control" placeholder="z. B. Bitte 2x verpacken">
-    </div>
-
-    <div class="mb-3">
-        <label for="datei" class="form-label"><i class="fas fa-file-upload"></i> Datei anhängen</label>
-        <input type="file" name="datei" id="datei" class="form-control">
-    </div>
-
-    <button type="submit" class="btn btn-primary">
-        <i class="fas fa-paper-plane"></i> Bestellung abschicken
-    </button>
-</form>
-
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <div class="alert alert-success mt-4">
-      {% for message in messages %}
-        <div>{{ message }}</div>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
+        <button type="submit" class="btn btn-primary mt-3">✅ Bestellung absenden</button>
+    </form>
+</div>
 {% endblock %}

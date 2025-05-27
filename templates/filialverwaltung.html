@@ -1,111 +1,49 @@
-<!doctype html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>SmartSupply – Filialverwaltung</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 30px;
-            background-color: #fdfdfd;
-            color: #333;
-        }
+{% extends "layout.html" %}
 
-        h2 {
-            color: #222;
-            margin-bottom: 15px;
-        }
+{% block content %}
+<div class="container">
+    <h1>🏢 SmartSupply – Filialverwaltung</h1>
 
-        h3 {
-            margin-top: 40px;
-        }
-
-        a {
-            text-decoration: none;
-            color: #0057b8;
-            font-weight: bold;
-        }
-
-        input, button {
-            padding: 8px;
-            font-size: 14px;
-            margin: 5px 0;
-        }
-
-        form {
-            margin-bottom: 20px;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #333;
-            color: white;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        .footer {
-            margin-top: 60px;
-            padding-top: 20px;
-            font-size: 13px;
-            text-align: center;
-            color: #4c0000;
-        }
-    </style>
-</head>
-<body>
-    <h2>SmartSupply – Filialverwaltung</h2>
-    <form method="post">
-        <b>Neue Filiale anlegen:</b><br><br>
-        <label>PLZ:</label><br>
-        <input type="text" name="plz" required><br>
-        <label>Name:</label><br>
-        <input type="text" name="name" required><br>
-        <button type="submit" name="filialhinzu">➕ Hinzufügen</button>
+    <form method="post" class="form-section">
+        <h2>➕ Neue Filiale anlegen</h2>
+        <div class="form-group">
+            <label for="plz">PLZ:</label>
+            <input type="text" name="plz" id="plz" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name" class="form-control" required>
+        </div>
+        <button type="submit" name="filialhinzu" class="btn btn-primary">➕ Hinzufügen</button>
     </form>
 
-    <h3>Bestehende Filialen</h3>
-    <table>
-        <tr>
-            <th>PLZ</th>
-            <th>Name</th>
-            <th>Löschen</th>
-        </tr>
-        {% for f in filialen %}
-        <tr>
-            <td>{{ f.plz }}</td>
-            <td>{{ f.name }}</td>
-            <td>
-                <form method="post" style="display:inline;">
-                    <input type="hidden" name="plz_loeschen" value="{{ f.plz }}">
-                    <button type="submit" name="filialloeschen" onclick="return confirm('Filiale wirklich löschen?');">🗑️ Löschen</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
+    <h2>📋 Bestehende Filialen</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>PLZ</th>
+                <th>Name</th>
+                <th>Aktion</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for f in filialen %}
+            <tr>
+                <td>{{ f.plz }}</td>
+                <td>{{ f.name }}</td>
+                <td>
+                    <form method="post" style="display:inline;">
+                        <input type="hidden" name="plz_loeschen" value="{{ f.plz }}">
+                        <button type="submit" name="filialloeschen" class="btn btn-danger btn-sm" onclick="return confirm('Filiale wirklich löschen?');">🗑️ Löschen</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-    <br>
-    <a href="/admin">← Zurück zum Adminbereich</a>
 
-    <footer class="footer">
-        Alle Rechte beinhaltet – Natanael Man
-    </footer>
-</body>
-</html>
+    <div class="mt-4">
+        <a href="/admin" class="btn btn-secondary">← Zurück zum Adminbereich</a>
+    </div>
+</div>
+{% endblock %}

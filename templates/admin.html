@@ -1,44 +1,53 @@
-<!doctype html>
-<html>
-<head>
-    <title>SmartSupply Adminbereich</title>
-</head>
-<body>
-    <h2>SmartSupply – Adminbereich</h2>
-    <a href="/artikelverwaltung">Artikelverwaltung</a> | 
-        <a href="/filialverwaltung">Filialverwaltung</a> | 
-        <a href="/logout">Logout</a> | 
-        <a href="/admin_matrix">Matrix-Ansicht</a>
-    <h3>Alle Bestellungen</h3>
-    <table border ="1" cellpadding="6">
-        <tr>
-            <th>Zeitpunkt</th>
-            <th>Filiale</th>
-            <th>Artikel</th>
-            <th>Lieferant</th>
-            <th>Tag</th>
-            <th>Menge</th>
-            <th>Sonderwunsch</th>
-            <th>Datei</th>
-        </tr>
-        {% for b in bestellungen %}
-        <tr>
-            <td>{{ b.zeitpunkt }}</td>
-            <td>{{ b.filialname }} ({{ b.plz }})</td>
-            <td>{{ b.artikelname }}</td>
-            <td>{{ b.lieferant }}</td>
-            <td>{{ b.tag }}</td>
-            <td>{{ b.menge }}</td>
-            <td>{{ b.kommentar }}</td>
-            <td>
-                {% if b.datei %}
-                    <a href="{{ url_for('uploads', filename=b.datei) }}">Download</a>
-                {% else %}
-                    –
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-</body>
-</html>
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>🛠️ SmartSupply – Adminbereich</h1>
+
+    <div class="mb-3">
+        <a href="/artikelverwaltung" class="btn btn-outline-primary">📦 Artikelverwaltung</a>
+        <a href="/filialverwaltung" class="btn btn-outline-primary">🏢 Filialverwaltung</a>
+        <a href="/admin_matrix" class="btn btn-outline-info">📊 Matrix-Ansicht</a>
+        <a href="/logout" class="btn btn-danger">🚪 Logout</a>
+    </div>
+
+    <h2>📋 Alle Bestellungen</h2>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Zeitpunkt</th>
+                    <th>Filiale</th>
+                    <th>Artikel</th>
+                    <th>Lieferant</th>
+                    <th>Tag</th>
+                    <th>Menge</th>
+                    <th>Sonderwunsch</th>
+                    <th>Datei</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in bestellungen %}
+                <tr>
+                    <td>{{ b.zeitpunkt }}</td>
+                    <td>{{ b.filialname }} ({{ b.plz }})</td>
+                    <td>{{ b.artikelname }}</td>
+                    <td>{{ b.lieferant }}</td>
+                    <td>{{ b.tag }}</td>
+                    <td>{{ b.menge }}</td>
+                    <td>{{ b.kommentar or '–' }}</td>
+                    <td>
+                        {% if b.datei %}
+                            <a href="{{ url_for('uploads', filename=b.datei) }}" class="btn btn-sm btn-link">📎 Download</a>
+                        {% else %}
+                            –
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
