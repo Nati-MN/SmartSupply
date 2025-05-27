@@ -23,6 +23,20 @@ def get_filialname(plz):
     cur.execute("SELECT name FROM filialen WHERE plz = ?", (plz,))
     result = cur.fetchone()
     return result["name"] if result else "Unbekannt"
+from flask import make_response
+
+@app.after_request
+def add_no_cache_headers(response):
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
+
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -70,14 +84,16 @@ def bestellen():
         for a in artikel:
             menge = request.form.get(f'menge_{a["id"]}')
             erlaubt = (not a['plz'] or plz in a['plz'].split(','))
+
             if menge and erlaubt and menge.isdigit():
                 menge_int = int(menge)
                 max_menge = a['maxmenge'] or 999  # Fallback auf 999 falls NULL
-            if 0 < menge_int <= max_menge:
-                cur.execute("INSERT INTO bestellungen (plz, artikel_id, menge, kommentar, datei) VALUES (?, ?, ?, ?, ?)",
+
+                if 0 < menge_int <= max_menge:
+                    scur.execute("INSERT INTO bestellungen (plz, artikel_id, menge, kommentar, datei) VALUES (?, ?, ?, ?, ?)",
                             (plz, a['id'], menge_int, kommentar, dateiname))
             else:
-                flash(f"Ungültige Menge für Artikel: {a['name']} – erlaubt ist 1 bis {max_menge}")
+                    flash(f"Ungültige Menge für Artikel: {a['name']} – erlaubt ist 1 bis {max_menge}")
 
         conn.commit()
         flash('Bestellung erfolgreich gespeichert!')
