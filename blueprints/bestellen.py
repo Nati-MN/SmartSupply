@@ -33,7 +33,7 @@ def bestellen_view():
 
             if menge and erlaubt and menge.isdigit():
                 menge_int = int(menge)
-                max_menge = a['maxmenge'] or 999
+                max_menge = int(a['maxmenge']) if a['maxmenge'] else 999
 
                 if 0 < menge_int <= max_menge:
                     cur.execute(

@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, session
 from db import get_db
+from db import get_db, get_filialname
 
 artikel = Blueprint('artikel', __name__)
 

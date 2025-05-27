@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, session, redirect, make_response
-from db import get_db
 from datetime import datetime
 import io
 import csv
 import xlsxwriter
 from fpdf import FPDF
+from db import get_db, get_filialname
+
 
 admin = Blueprint('admin', __name__)
 
