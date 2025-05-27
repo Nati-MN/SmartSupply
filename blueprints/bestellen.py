@@ -35,7 +35,7 @@ def bestellen_view():
                 menge_int = int(menge)
                 max_menge = int(a['maxmenge']) if a['maxmenge'] else 999
 
-                if 0 < menge_int <= max_menge:
+                if 0 < menge_int <= max_mengse:
                     cur.execute(
                         "INSERT INTO bestellungen (plz, artikel_id, menge, kommentar, datei) VALUES (?, ?, ?, ?, ?)",
                         (plz, a['id'], menge_int, kommentar, dateiname)
