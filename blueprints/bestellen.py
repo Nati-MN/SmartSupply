@@ -28,7 +28,7 @@ def bestellen_view():
             file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], dateiname))
 
         for a in artikel:
-            menge = request.form.get(f'menge_{a['id']}')
+            menge = request.form.get(f"menge_{a['id']}")
             erlaubt = (not a['plz'] or plz in a['plz'].split(','))
 
             if menge and erlaubt and menge.isdigit():
