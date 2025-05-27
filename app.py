@@ -168,11 +168,6 @@ def uploads(filename):
         return redirect('/')
     return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect('/')
-
 @app.route('/admin_matrix')
 def admin_matrix():
     if not session.get('admin'):
