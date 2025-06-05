@@ -26,6 +26,27 @@
             <label for="plz">Nur für PLZ (Komma getrennt, leer = alle):</label>
             <input type="text" name="plz" id="plz" class="form-control">
         </div>
+        <div class="form-group">
+            <label for="beschreibung">Beschreibung:</label>
+            <input type="text" name="beschreibung" id="beschreibung" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="gewicht">Gewicht (kg):</label>
+            <input type="number" step="0.01" name="gewicht" id="gewicht" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="einheit">Einheit:</label>
+            <input type="text" name="einheit" id="einheit" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="mhd">MHD (z.B. TT.MM.JJJJ):</label>
+            <input type="text" name="mhd" id="mhd" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="artikelnummer">Artikelnummer:</label>
+            <input type="text" name="artikelnummer" id="artikelnummer" class="form-control">
+        </div>
+
         <button type="submit" name="hinzu" class="btn btn-primary">➕ Hinzufügen</button>
     </form>
 
@@ -39,6 +60,11 @@
                     <th>Tag</th>
                     <th>Max. Menge</th>
                     <th>Nur für PLZ</th>
+                    <th>Beschreibung</th>
+                    <th>Gewicht</th>
+                    <th>Einheit</th>
+                    <th>MHD</th>
+                    <th>Artikelnummer</th>
                     <th>Aktion</th>
                 </tr>
             </thead>
@@ -50,6 +76,11 @@
                     <td>{{ art.tag }}</td>
                     <td>{{ art.maxmenge }}</td>
                     <td>{{ art.plz }}</td>
+                    <td>{{ art.beschreibung }}</td>
+                    <td>{{ art.gewicht }}</td>
+                    <td>{{ art.einheit }}</td>
+                    <td>{{ art.mhd }}</td>
+                    <td>{{ art.artikelnummer }}</td>
                     <td>
                         <form method="post" style="display:inline;">
                             <input type="hidden" name="art_id" value="{{ art.id }}">
@@ -63,7 +94,7 @@
     </div>
 
     <div class="mt-4">
-        <a href="/admin" class="btn btn-secondary">← Zurück zum Adminbereich</a>
+        <a href="/admin_matrix" class="btn btn-secondary">📊 Zur Bestellmatrix</a>
     </div>
 </div>
 {% endblock %}

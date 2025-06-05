@@ -1,47 +1,197 @@
 {% extends "layout.html" %}
 
+{% block head %}
+    {{ super() }}
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #4a4a4a;
+            text-align: center;
+        }
+
+        .mb-3 {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .btn {
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            transition: background-color 0.3s, transform 0.2s;
+            text-align: center;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background-color: #138496;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+            transform: translateY(-2px);
+        }
+
+        .table {
+            margin-top: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 100%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .table thead {
+            background-color: #343a40;
+            color: white;
+        }
+
+        .table th, .table td {
+            padding: 1rem;
+            text-align: left;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .article {
+            font-weight: bold;
+        }
+
+        .input-menge {
+            width: 80px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .btn {
+                font-size: 0.9rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .input-menge {
+                width: 60px;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
 <div class="container">
-    <h1>📊 SmartSupply – Adminübersicht (Matrix)</h1>
-
-    <div class="mb-3">
-        <a href="/admin" class="btn btn-secondary">↩️ Klassische Ansicht</a>
-        <a href="/artikelverwaltung" class="btn btn-outline-primary">📦 Artikelverwaltung</a>
-        <a href="/filialverwaltung" class="btn btn-outline-primary">🏢 Filialverwaltung</a>
-        <a href="/logout" class="btn btn-danger">🚪 Logout</a>
-    </div>
+    <h1>SmartSupply – Adminübersicht (Matrix)</h1>
 
     <div class="mb-3">
         <strong>Exportieren als:</strong>
-        <a href="/admin_matrix_export/xlsx" class="btn btn-sm btn-success">📄 Excel</a>
-        <a href="/admin_matrix_export/csv" class="btn btn-sm btn-info">📄 CSV</a>
-        <a href="/admin_matrix_export/pdf" class="btn btn-sm btn-warning">📄 PDF</a>
+        <a href="/admin_matrix_export/xlsx" class="btn btn-sm btn-success">Excel</a>
+        <a href="/admin_matrix_export/csv" class="btn btn-sm btn-info">CSV</a>
+        <a href="/admin_matrix_export/pdf" class="btn btn-sm btn-warning">PDF</a>
     </div>
 
-    <table class="table table-bordered table-hover table-sm">
-        <thead class="thead-dark">
-            <tr>
-                <th>📅 Datum</th>
-                <th>🧾 Artikel</th>
-                {% for filiale in filialen %}
-                    <th>{{ filiale.plz }}</th>
+    <form method="post">
+        <table class="table table-bordered table-hover table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Lieferant</th>
+                    <th>Tag</th>
+                    <th>Max. Menge</th>
+                    <th>Nur für PLZ</th>
+                    <th>Beschreibung</th>
+                    <th>Gewicht</th>
+                    <th>Einheit</th>
+                    <th>MHD</th>
+                    <th>Artikelnummer</th>
+                    {% for filiale in filialen %}
+                        <th>{{ filiale.plz }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for artikel in artikel_liste %}
+                <tr>
+                    <td>{{ artikel.name }}</td>
+                    <td>{{ artikel.lieferant }}</td>
+                    <td>{{ artikel.tag }}</td>
+                    <td>{{ artikel.maxmenge }}</td>
+                    <td>{{ artikel.plz }}</td>
+                    <td>{{ artikel.beschreibung }}</td>
+                    <td>{{ artikel.gewicht }}</td>
+                    <td>{{ artikel.einheit }}</td>
+                    <td>{{ artikel.mhd }}</td>
+                    <td>{{ artikel.artikelnummer }}</td>
+                    {% for filiale in filialen %}
+                        <td>
+                            <input type="number"
+                                   name="menge_{{ artikel.id }}_{{ filiale.plz }}"
+                                   class="form-control input-menge"
+                                   min="0"
+                                   max="{{ artikel.maxmenge }}"
+                                   value="{{ artikel.bestellungen.get(filiale.plz, 0) }}">
+                        </td>
+                    {% endfor %}
+                </tr>
                 {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for artikel in artikel_liste %}
-            <tr>
-                <td>{{ current_date }}</td>
-                <td class="article font-weight-bold">
-                    {{ artikel.name }}<br>
-                    <small>{{ artikel.lieferant }} | {{ artikel.tag }}</small>
-                </td>
-                {% for filiale in filialen %}
-                    <td>{{ artikel.bestellungen.get(filiale.plz, 0) }}</td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+        <button type="submit" name="speichern" class="btn btn-success mt-3">💾 Bestellungen speichern</button>
+    </form>
 </div>
 {% endblock %}
