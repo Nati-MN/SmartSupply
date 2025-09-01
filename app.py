@@ -1,65 +1,74 @@
-from flask import Flask, send_file, flash, make_response
+# app.py
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from dotenv import load_dotenv
 import os
-from datetime import datetime
-from werkzeug.utils import secure_filename
 
-# ✅ Blueprints importieren
-from blueprints.auth import auth
-from blueprints.bestellen import bestellen
-from blueprints.admin import admin
-from blueprints.artikel import artikel
+db = SQLAlchemy()
+migrate = Migrate()
 
-# ✅ .env-Datei laden
-load_dotenv()
+def create_app():
+    load_dotenv()
 
-# ✅ App konfigurieren
-app = Flask(__name__)
-app.secret_key = 'frood-intern-secret-key'
-app.config['UPLOAD_FOLDER'] = 'uploads'
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    app = Flask(__name__)
 
-# ✅ DATABASE_URL aus Umgebungsvariablen lesen
-database_url = os.getenv('DATABASE_URL')
-if not database_url:
-    # Fallback für lokale Entwicklung (optional)
-    database_url = 'sqlite:///frood.db'
+    # --- Config ---
+    app.config.update(
+        SECRET_KEY=os.getenv("SECRET_KEY", os.urandom(32)),
+        SQLALCHEMY_DATABASE_URI=os.getenv("DATABASE_URL", "sqlite:///frood.db"),
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        UPLOAD_FOLDER=os.getenv("UPLOAD_FOLDER", "uploads"),
+        MAX_CONTENT_LENGTH=10 * 1024 * 1024,  # 10 MB uploads
+        SESSION_COOKIE_SECURE=bool(int(os.getenv("SESSION_COOKIE_SECURE", "0"))),
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE="Lax",
+        WTF_CSRF_ENABLED=True,
+    )
 
-app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
-# ✅ SQLAlchemy initialisieren
-db = SQLAlchemy(app)
+    # --- Extensions ---
+    db.init_app(app)
+    migrate.init_app(app, db)
 
-# ✅ Blueprints registrieren
-app.register_blueprint(auth)
-app.register_blueprint(bestellen)
-app.register_blueprint(admin)
-app.register_blueprint(artikel)
+    # --- Models import AFTER db.init_app to avoid circulars ---
+    from models import Filiale  # noqa: F401
 
-# ✅ Tabellenmodelle
-class Filiale(db.Model):
-    __tablename__ = 'filialen'
-    id = db.Column(db.Integer, primary_key=True)
-    plz = db.Column(db.String, unique=True)
-    name = db.Column(db.String)
+    # --- Blueprints ---
+    from blueprints.auth import auth as auth_bp
+    from blueprints.bestellen import bestellen as order_bp
+    from blueprints.admin import admin as admin_bp
+    from blueprints.artikel import artikel as product_bp
 
-# ✅ Filialnamen abrufen
-def get_filialname(plz):
-    filiale = Filiale.query.filter_by(plz=plz).first()
-    return filiale.name if filiale else "Unbekannt"
+    app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(order_bp, url_prefix="/order")
+    app.register_blueprint(admin_bp, url_prefix="/admin")
+    app.register_blueprint(product_bp, url_prefix="/products")
 
-# ✅ Cache-Verhalten deaktivieren
-@app.after_request
-def add_no_cache_headers(response):
-    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "0"
-    return response
+    # --- No-cache for dynamic pages (tune per route if needed) ---
+    @app.after_request
+    def add_no_cache_headers(response):
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
 
-# ✅ Anwendung starten
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
+    # --- CLI helpers ---
+    @app.cli.command("seed-branches")
+    def seed_branches():
+        """Create some example branches."""
+        from models import Filiale
+        examples = [("1010", "Zentrale"), ("1020", "Filiale Leopoldstadt"), ("1030", "Filiale Landstraße")]
+        for plz, name in examples:
+            if not Filiale.query.filter_by(plz=plz).first():
+                db.session.add(Filiale(plz=plz, name=name))
+        db.session.commit()
+        print("Seeded branches.")
+
+    return app
+
+# For gunicorn: `gunicorn 'app:create_app()'`
+if __name__ == "__main__":
+    app = create_app()
     app.run(debug=True)
