@@ -1,6 +1,10 @@
-Flask==3.0.3
-Flask-SQLAlchemy==3.1.1
-Flask-Migrate==4.0.7
-Flask-WTF==1.2.1
-python-dotenv==1.0.1
-gunicorn==23.0.0
+Flask>=3.0,<3.1
+Werkzeug>=3.0,<3.1
+gunicorn>=21,<22
+Flask-SQLAlchemy>=3.1,<3.2
+SQLAlchemy>=2.0,<2.1
+Flask-Migrate>=4.0,<4.1
+python-dotenv>=1.0,<1.1
+psycopg2-binary>=2.9,<3.0    # falls Render-Postgres benutzt
+XlsxWriter>=3.1,<3.3
+fpdf>=1.7,<1.8
