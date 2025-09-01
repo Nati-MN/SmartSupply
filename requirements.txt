@@ -1,5 +1,6 @@
-flask
-gunicorn
-werkzeug
-xlsxwriter
-fpdf
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-Migrate==4.0.7
+Flask-WTF==1.2.1
+python-dotenv==1.0.1
+gunicorn==23.0.0
